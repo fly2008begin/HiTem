@@ -376,7 +376,6 @@ void ChatApp::processKeyboard() {
             sendTextMessage(_inputBuf);
             _inputBuf.clear();
             _inputCursorPos = 0;
-            _pinyinMode = false;
             _pinyinIME.clear();
             _needRedraw = true;
         }
