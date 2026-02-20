@@ -543,12 +543,24 @@ void UI::drawMsgHistory(const char* peerCode,
             int x = SCREEN_W - tw - 2;
             if (x < 2) x = 2;
             _canvas.setCursor(x, y);
+
+            // Use Chinese font for mixed content
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+            }
             _canvas.print(line.c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
         } else {
             _canvas.setTextColor(COL_TEXT, COL_BG);
             std::string prefix = dl.first ? ">> " : "   ";
             _canvas.setCursor(2, y);
+
+            // Use Chinese font for mixed content
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+            }
             _canvas.print((prefix + dl.text).c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
         }
         y += FONT_H;
     }

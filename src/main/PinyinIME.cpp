@@ -12,17 +12,14 @@ void PinyinIME::begin() {
 
 void PinyinIME::loadDictionary() {
     if (!SD.begin()) {
-        Serial.println("PinyinIME: SD.begin() failed");
         return;
     }
 
     File file = SD.open("/chat/pinyin_dict.txt", FILE_READ);
     if (!file) {
-        Serial.println("PinyinIME: Failed to open /chat/pinyin_dict.txt");
         return;
     }
 
-    Serial.println("PinyinIME: Loading dictionary...");
     int lineCount = 0;
     int entryCount = 0;
 
@@ -71,23 +68,11 @@ void PinyinIME::loadDictionary() {
         if (charList.size() > 0) {
             _dict[pinyin.c_str()] = charList;
             entryCount++;
-
-            // Debug: print first entry
-            if (entryCount == 1) {
-                Serial.printf("PinyinIME: First entry '%s' has %d candidates: ", pinyin.c_str(), charList.size());
-                for (int i = 0; i < std::min(3, (int)charList.size()); i++) {
-                    Serial.printf("'%s' ", charList[i].c_str());
-                }
-                Serial.println();
-            }
         }
     }
 
     file.close();
     _dictLoaded = (_dict.size() > 0);
-
-    Serial.printf("PinyinIME: Loaded %d entries from %d lines\n", entryCount, lineCount);
-    Serial.printf("PinyinIME: Dictionary size: %d\n", _dict.size());
 }
 
 void PinyinIME::inputLetter(char c) {
@@ -127,17 +112,12 @@ void PinyinIME::updateCandidates() {
 std::string PinyinIME::selectCandidate(int index) {
     std::vector<std::string> visible = getVisibleCandidates();
 
-    Serial.printf("PinyinIME::selectCandidate: index=%d, visible.size()=%d, page=%d\n",
-                  index, visible.size(), _currentPage);
-
     if (index >= 0 && index < visible.size()) {
         std::string selected = visible[index];
-        Serial.printf("PinyinIME::selectCandidate: selected='%s'\n", selected.c_str());
         clear();
         return selected;
     }
 
-    Serial.println("PinyinIME::selectCandidate: index out of range");
     return "";
 }
 
