@@ -31,6 +31,8 @@ bool Comm::begin(const char myCode[PAIRING_CODE_LEN]) {
     _myCode[PAIRING_CODE_LEN] = '\0';
     _seqCounter = 0;
     memset(_pending, 0, sizeof(_pending));
+    memset(_seenCache, 0, sizeof(_seenCache));
+    _seenCacheIdx = 0;
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
@@ -70,7 +72,8 @@ uint16_t Comm::calcCRC16(const uint8_t* data, size_t len) {
 }
 
 bool Comm::buildAndSend(const uint8_t* mac, const char destCode[PAIRING_CODE_LEN],
-                         uint8_t msg_type, const uint8_t* payload, size_t payload_len) {
+                         uint8_t msg_type, const uint8_t* payload, size_t payload_len,
+                         uint8_t hop_count) {
     if (payload_len > MAX_PAYLOAD_SIZE) return false;
 
     uint8_t buf[MAX_PACKET_SIZE];
@@ -80,7 +83,7 @@ bool Comm::buildAndSend(const uint8_t* mac, const char destCode[PAIRING_CODE_LEN
     memcpy(hdr->receiver_code, destCode, PAIRING_CODE_LEN);
     hdr->msg_type    = msg_type;
     hdr->seq_num     = _seqCounter++;
-    hdr->hop_count   = 0;
+    hdr->hop_count   = hop_count;
     hdr->payload_len = payload_len;
     hdr->crc16       = 0;
 
@@ -97,7 +100,12 @@ bool Comm::buildAndSend(const uint8_t* mac, const char destCode[PAIRING_CODE_LEN
 
 bool Comm::sendBroadcast(uint8_t msg_type, const uint8_t* payload, size_t payload_len) {
     const char bcast_code[PAIRING_CODE_LEN] = {'0','0','0','0','0','0'};
-    return buildAndSend(BROADCAST_MAC, bcast_code, msg_type, payload, payload_len);
+    return buildAndSend(BROADCAST_MAC, bcast_code, msg_type, payload, payload_len, 0);
+}
+
+bool Comm::sendBroadcastWithHops(const char destCode[PAIRING_CODE_LEN], uint8_t msg_type,
+                                   const uint8_t* payload, size_t payload_len, uint8_t hop_count) {
+    return buildAndSend(BROADCAST_MAC, destCode, msg_type, payload, payload_len, hop_count);
 }
 
 bool Comm::sendUnicast(const uint8_t mac[6], const char destCode[PAIRING_CODE_LEN],
@@ -111,7 +119,7 @@ bool Comm::sendUnicast(const uint8_t mac[6], const char destCode[PAIRING_CODE_LE
         esp_now_add_peer(&peer);
     }
 
-    bool sent = buildAndSend(mac, destCode, msg_type, payload, payload_len);
+    bool sent = buildAndSend(mac, destCode, msg_type, payload, payload_len, 0);
 
     // Track for ACK if it's a text message
     if (sent && msg_type == MSG_TEXT) {
@@ -198,4 +206,29 @@ void Comm::checkRetries() {
             }
         }
     }
+}
+
+bool Comm::isDuplicate(const char senderCode[PAIRING_CODE_LEN], uint16_t seq) {
+    uint32_t now = millis();
+    for (int i = 0; i < SEEN_CACHE_SIZE; i++) {
+        // Skip expired entries
+        if (_seenCache[i].sender_code[0] != '\0' &&
+            now - _seenCache[i].timestamp > SEEN_CACHE_TIMEOUT_MS) {
+            _seenCache[i].sender_code[0] = '\0';
+        }
+
+        if (_seenCache[i].sender_code[0] != '\0' &&
+            strncmp(_seenCache[i].sender_code, senderCode, PAIRING_CODE_LEN) == 0 &&
+            _seenCache[i].seq == seq) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Comm::markSeen(const char senderCode[PAIRING_CODE_LEN], uint16_t seq) {
+    memcpy(_seenCache[_seenCacheIdx].sender_code, senderCode, PAIRING_CODE_LEN);
+    _seenCache[_seenCacheIdx].seq = seq;
+    _seenCache[_seenCacheIdx].timestamp = millis();
+    _seenCacheIdx = (_seenCacheIdx + 1) % SEEN_CACHE_SIZE;
 }
