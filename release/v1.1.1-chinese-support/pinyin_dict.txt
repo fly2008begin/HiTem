@@ -1,0 +1,399 @@
+# Pinyin Dictionary
+# Format: pinyin char1 char2 char3 ...
+
+a 啊 阿 呵 嗄
+ai 爱 哀 挨 碍 癌 艾
+an 安 按 暗 岸 案
+ang 昂 盎
+ao 奥 傲 熬 澳 懊 敖
+ba 把 吧 爸 八 巴 拔 坝 霸 罢
+bai 白 百 摆 败 拜 柏
+ban 办 半 班 板 版 伴 扮 拌 颁
+bang 帮 邦 棒 榜 膀 绑 磅 镑
+bao 报 保 包 宝 抱 暴 爆 薄 饱 堡
+bei 被 北 备 背 杯 倍 贝 悲 碑
+ben 本 奔 笨
+beng 蹦 崩 绷 甭
+bi 比 必 笔 逼 闭 毕 避 壁 鼻 彼
+bian 变 便 边 编 遍 辩 辨 鞭
+biao 表 标 彪 膘 镖 飙
+bie 别 憋 瘪
+bin 宾 滨 彬
+bing 并 病 兵 冰 饼
+bo 不 波 博 伯 播 拨 薄 玻 搏
+bu 不 步 布 部 补 捕 卜
+ca 擦 嚓
+cai 才 材 财 采 彩 菜 蔡
+can 参 残 惨 灿 餐
+cang 藏 仓 苍 舱
+cao 草 操 曹 槽
+ce 策 测 侧 厕
+ceng 层 曾 蹭
+cha 查 差 茶 察 插 叉 刹
+chai 拆 柴 豺
+chan 产 颤 缠 铲 阐 蝉
+chang 长 常 场 厂 唱 畅 昌 倡 尝
+chao 超 朝 潮 炒 吵 抄
+che 车 彻 撤 扯
+chen 陈 沉 晨 尘 衬 趁 称
+cheng 成 城 程 承 称 诚 乘 盛 呈
+chi 吃 持 迟 尺 赤 翅 斥 齿 耻
+chong 重 冲 充 崇 虫 宠
+chou 抽 愁 臭 仇 稠 丑
+chu 出 处 初 除 础 储 楚 触 畜
+chuan 传 川 船 穿 串
+chuang 创 窗 床 闯
+chui 吹 垂 炊 捶
+chun 春 纯 唇 蠢 醇
+chuo 戳 绰
+ci 此 次 词 辞 刺 瓷 磁
+cong 从 丛 聪 匆
+cou 凑 辏
+cu 粗 促 醋 簇
+cuan 窜 篡 蹿
+cui 催 脆 翠 摧 璃
+cun 村 存 寸
+cuo 错 措 挫 搓 磋
+da 大 打 达 答 搭 瘩
+dai 带 待 代 袋 戴 呆 贷
+dan 但 单 担 弹 蛋 淡 胆 旦 氮
+dang 当 党 挡 档 荡
+dao 到 道 导 倒 刀 岛 盗 稻
+de 的 得 地
+deng 等 登 灯 邓 凳 瞪
+di 地 第 低 底 的 弟 帝 递 抵
+dian 点 电 店 典 殿 垫 碘 淀
+diao 掉 调 吊 钓 雕 刁
+die 跌 叠 蝶 迭 碟 爹
+ding 定 顶 订 钉 盯 叮 鼎
+diu 丢
+dong 东 动 懂 冬 洞 冻 栋 董
+dou 都 斗 豆 逗 抖 陡 痘
+du 度 读 独 毒 堵 赌 杜 肚 渡
+duan 断 段 短 端 锻 缎
+dui 对 队 堆 兑 敦
+dun 顿 吨 蹲 盾 钝 炖
+duo 多 夺 朵 躲 堕 舵
+e 恶 而 饿 额 鹅 俄 厄 扼 遏
+en 恩
+er 而 二 儿 耳 尔 饵
+fa 发 法 罚 乏 伐 筏 阀
+fan 反 饭 范 犯 翻 凡 烦 繁 泛
+fang 方 放 房 防 访 纺 仿 芳 妨
+fei 非 飞 费 肥 废 沸 肺 菲 匪
+fen 分 份 纷 粉 奋 愤 坟 焚 粪
+feng 风 封 丰 峰 锋 疯 逢 缝 讽
+fo 佛
+fou 否
+fu 服 福 府 副 复 负 富 父 妇 付
+ga 噶 嘎 尬
+gai 该 改 盖 概 钙 溉 丐
+gan 干 感 敢 赶 甘 肝 杆 柑 竿
+gang 刚 钢 港 岗 杠 纲 缸
+gao 高 告 搞 稿 膏 糕 镐
+ge 个 各 哥 歌 革 格 隔 阁 割
+gei 给
+gen 根 跟
+geng 更 耕 梗 埂 耿 庚
+gong 工 公 共 功 供 宫 恭 贡 巩
+gou 够 狗 构 购 沟 钩 勾 苟
+gu 古 故 顾 固 骨 谷 股 鼓 孤
+gua 挂 瓜 刮 寡 卦 褂
+guai 怪 拐 乖
+guan 关 观 管 馆 官 冠 惯 贯 罐
+guang 光 广 逛
+gui 贵 规 归 鬼 柜 轨 桂 跪 硅
+gun 滚 棍 辊
+guo 国 过 果 裹 锅 郭
+ha 哈
+hai 还 海 害 孩 骇
+han 汉 含 寒 喊 罕 韩 旱 憾 悍
+hang 行 航 杭 巷 夯
+hao 好 号 浩 毫 豪 耗 呵
+he 和 合 河 何 核 喝 荷 贺 赫
+hei 黑 嘿
+hen 很 恨 狠
+heng 横 衡 恒 哼
+hong 红 洪 宏 虹 鸿 轰 哄 烘
+hou 后 候 厚 侯 喉
+hu 互 户 护 湖 胡 虎 呼 忽 糊
+hua 话 化 华 画 花 划 滑 哗
+huai 坏 怀 淮 槐
+huan 换 还 环 欢 缓 幻 唤 患 焕
+huang 黄 荒 慌 皇 煌 晃 谎 恍
+hui 会 回 汇 惠 辉 挥 毁 慧 灰
+hun 混 婚 魂 浑 昏
+huo 活 火 或 货 获 祸 惑 霍
+ji 及 机 几 己 记 既 计 技 级
+jia 家 加 假 价 架 嘉 甲 佳 夹
+jian 见 间 建 件 健 坚 检 减 简
+jiang 将 江 讲 降 强 奖 蒋 姜 浆
+jiao 教 叫 较 交 角 脚 觉 校 胶
+jie 接 结 解 姐 界 借 介 节 街
+jin 进 金 今 近 仅 紧 尽 劲 锦
+jing 经 精 京 景 静 境 惊 竞 镜
+jiong 窘 炯
+jiu 就 九 久 旧 救 酒 究 纠 舅
+ju 据 具 举 巨 句 聚 拒 剧 居
+juan 卷 捐 倦 眷 绢
+jue 决 绝 觉 掘 诀 倔 爵
+jun 军 均 君 俊 峻 骏
+ka 卡 咖 喀
+kai 开 凯 慨 楷 揩
+kan 看 刊 堪 砍 坎 侃
+kang 康 抗 扛 炕 慷
+kao 考 靠 烤 拷 铐
+ke 可 科 克 课 客 刻 渴 壳 颗
+ken 肯 垦 恳 啃
+keng 坑 铿
+kong 空 孔 控 恐
+kou 口 扣 寇 叩
+ku 苦 哭 库 裤 酷 窟
+kua 夸 垮 挎 跨 胯
+kuai 快 块 筷 会 侩
+kuan 宽 款
+kuang 况 矿 框 狂 旷 眶
+kui 亏 愧 溃 馈 匮 葵
+kun 困 昆 捆 坤 琨
+kuo 扩 括 阔 廓
+la 拉 啦 辣 腊 蜡 喇
+lai 来 赖 莱 徕
+lan 蓝 兰 览 懒 栏 烂 滥 篮
+lang 浪 郎 狼 廊 朗 琅
+lao 老 劳 牢 捞 涝 姥 烙
+le 了 乐 勒
+lei 累 类 泪 雷 蕾 垒 擂
+leng 冷 愣 棱
+li 里 理 力 利 立 例 历 离 李
+lia 俩
+lian 连 联 练 脸 恋 炼 链 莲 廉
+liang 两 量 良 亮 粮 凉 梁 辆 谅
+liao 了 料 疗 辽 聊 寥 撩 缭
+lie 列 烈 裂 劣 猎 冽
+lin 林 临 邻 淋 琳 磷 鳞 麟
+ling 领 令 零 灵 龄 铃 凌 陵 岭
+liu 六 流 留 刘 柳 溜 榴
+long 龙 隆 笼 聋 拢 垄 陇
+lou 楼 搂 漏 陋
+lu 路 录 陆 鹿 露 卢 炉 芦 庐
+lv 绿 律 率 虑 滤 旅 吕 铝 侣
+luan 乱 卵 滦 峦 挛
+lue 略 掠
+lun 论 轮 伦 沦
+luo 落 罗 洛 络 骆 逻 锣 箩
+ma 吗 马 妈 麻 码 骂 嘛 抹
+mai 买 卖 麦 迈 脉 埋
+man 满 慢 漫 蛮 曼 瞒 馒
+mang 忙 芒 盲 茫 莽
+mao 毛 矛 茅 茂 冒 贸 帽 貌 猫
+me 么
+mei 没 每 美 妹 媒 煤 梅 霉 眉
+men 们 门 闷 焖
+meng 梦 猛 蒙 盟 孟 萌
+mi 米 密 迷 秘 蜜 谜 弥 觅 靡
+mian 面 免 棉 眠 绵 勉 冕 缅
+miao 妙 秒 苗 描 渺 藐 缈
+mie 灭 蔑 篾
+min 民 敏 闽 悯 抿 泯
+ming 明 名 命 鸣 铭 冥
+miu 谬
+mo 么 没 模 摸 莫 墨 默 漠 磨
+mou 某 谋 牟 眸
+mu 目 木 母 墓 幕 牧 募 慕 牡
+na 那 拿 哪 纳 娜 钠
+nai 奶 耐 乃 奈
+nan 难 南 男 楠
+nang 囊
+nao 脑 闹 恼 挠 瑙
+ne 呢
+nei 内
+nen 嫩
+neng 能
+ni 你 尼 呢 泥 逆 拟 腻 妮
+nian 年 念 酿 碾 捻 撵
+niang 娘 酿
+niao 鸟 尿 袅
+nie 捏 聂 孽 镍 涅
+nin 您
+ning 宁 凝 拧 泞 柠 狞
+niu 牛 扭 纽 钮 妞
+nong 农 浓 弄 侬
+nu 努 怒 奴 弩
+nv 女 恼
+nuan 暖
+nue 虐 疟
+nuo 诺 懦 糯 挪
+o 哦 噢
+ou 欧 偶 呕 殴 藕 鸥
+pa 怕 爬 帕 趴 琶
+pai 排 派 牌 拍 徘
+pan 判 盘 盼 畔 攀 潘 叛
+pang 旁 胖 庞 磅 螃
+pao 跑 炮 泡 抛 袍 刨 咆
+pei 配 培 陪 赔 佩 沛
+pen 盆 喷
+peng 朋 碰 彭 棚 蓬 膨 澎
+pi 批 皮 疲 披 匹 屁 僻 譬 琵
+pian 片 篇 偏 骗 翩 便
+piao 票 飘 漂 瓢 嫖 缥
+pie 撇 瞥
+pin 品 贫 拼 频 聘
+ping 平 评 凭 瓶 屏 苹 萍 乒
+po 破 迫 坡 泼 颇 婆 魄
+pou 剖 掊
+pu 普 铺 扑 谱 朴 浦 葡 仆
+qi 其 起 期 气 七 器 企 奇 齐
+qia 恰 洽 掐 卡
+qian 前 千 钱 签 浅 欠 牵 铅 谦
+qiang 强 墙 抢 枪 腔 呛 羌 蔷
+qiao 桥 巧 瞧 敲 悄 俏 翘 峭
+qie 切 且 窃 茄 怯 妾
+qin 亲 勤 琴 侵 秦 芹 擒 禽
+qing 请 情 清 青 轻 庆 倾 卿 晴
+qiong 穷 琼 穹
+qiu 求 球 秋 丘 邱 囚 酋 泅
+qu 去 区 取 曲 趣 渠 驱 屈 躯
+quan 全 权 泉 圈 劝 拳 犬 券 颧
+que 却 确 缺 雀 瘸 鹊
+qun 群 裙
+ran 然 燃 染 冉
+rang 让 嚷 壤 攘
+rao 绕 扰 饶
+re 热 惹
+ren 人 任 认 仁 忍 韧 刃 纫
+reng 扔 仍
+ri 日
+rong 容 融 荣 溶 熔 绒 冗 蓉
+rou 肉 柔 揉 糅
+ru 如 入 儒 乳 辱 汝
+ruan 软 阮
+rui 瑞 锐 睿 蕊
+run 润 闰
+ruo 若 弱
+sa 撒 洒 萨
+sai 赛 塞 腮
+san 三 散 伞 叁
+sang 桑 嗓 丧 搡
+sao 扫 嫂 骚 搔
+se 色 涩 瑟 塞
+sen 森
+seng 僧
+sha 杀 沙 啥 砂 刹 纱 莎 傻
+shai 晒 筛
+shan 山 闪 善 扇 删 陕 衫 擅 膳
+shang 上 商 伤 尚 赏 晌 墒
+shao 少 绍 烧 稍 哨 勺 韶 芍
+she 社 设 射 舍 蛇 舌 摄 赦 涉
+shen 什 身 深 神 审 申 伸 慎 沈
+sheng 生 声 省 胜 圣 盛 剩 升 绳
+shi 是 时 十 事 市 使 世 石 实
+shou 手 受 收 首 守 寿 授 售 瘦
+shu 书 数 树 术 输 属 熟 舒 束
+shua 刷 耍 唰
+shuai 摔 衰 甩 帅
+shuan 栓 拴 涮
+shuang 双 爽 霜
+shui 水 谁 睡 税
+shun 顺 瞬 舜
+shuo 说 硕 朔 烁 铄
+si 四 思 死 司 私 丝 寺 似 斯
+song 送 松 宋 颂 诵 耸 怂 嵩
+sou 搜 艘 嗽
+su 素 速 诉 苏 俗 肃 宿 塑
+suan 算 酸 蒜
+sui 随 岁 虽 碎 遂 隧 髓 穗
+sun 孙 损 笋 榫
+suo 所 索 锁 缩 琐
+ta 他 她 它 塔 踏 拓 榻 塌
+tai 太 台 态 抬 泰 胎 苔
+tan 谈 弹 坦 探 叹 炭 滩 摊 贪
+tang 堂 糖 汤 唐 塘 躺 趟 烫 倘
+tao 讨 套 逃 桃 淘 陶 涛 滔
+te 特
+teng 疼 腾 藤 誊
+ti 提 题 体 替 踢 蹄 剔 梯
+tian 天 田 甜 填 添 舔
+tiao 条 跳 调 挑 迢 眺
+tie 铁 贴 帖
+ting 听 停 庭 亭 挺 艇 廷
+tong 同 通 统 痛 童 桶 筒 铜 彤
+tou 头 投 透 偷
+tu 图 土 突 途 涂 吐 徒 屠 兔
+tuan 团 湍 疃
+tui 推 退 腿 褪 颓
+tun 吞 屯 臀 囤
+tuo 拖 脱 托 拓 妥 驼 椭 唾
+wa 挖 瓦 娃 蛙 洼 袜
+wai 外 歪
+wan 万 完 玩 晚 碗 湾 顽 挽 婉
+wang 王 往 望 忘 旺 网 亡 枉
+wei 为 位 未 围 伟 卫 委 维 唯
+wen 文 问 闻 温 稳 吻 蚊 纹 紊
+weng 翁 嗡 瓮
+wo 我 握 卧 窝 沃 斡 渥
+wu 无 五 物 务 武 午 舞 误 吴
+xi 系 西 息 希 习 喜 细 戏 洗
+xia 下 夏 吓 峡 狭 霞 虾 瞎
+xian 先 现 线 县 显 限 鲜 险 献
+xiang 向 想 相 象 像 乡 香 箱 详
+xiao 小 笑 效 消 校 晓 孝 肖 削
+xie 些 写 谢 鞋 协 斜 血 泄 械
+xin 新 心 信 辛 欣 薪 芯 锌
+xing 行 性 星 兴 刑 型 姓 醒 幸
+xiong 雄 兄 胸 凶 匈 汹
+xiu 修 休 秀 袖 绣 锈 羞 朽
+xu 需 须 许 续 序 徐 虚 蓄 畜
+xuan 选 宣 旋 悬 玄 炫 绚 癣
+xue 学 雪 血 削 靴 穴
+xun 训 讯 迅 寻 询 循 旬 巡 熏
+ya 压 呀 牙 押 鸭 雅 哑 亚
+yan 研 眼 言 严 演 验 盐 延 颜
+yang 样 养 阳 羊 扬 洋 仰 央 氧
+yao 要 药 摇 腰 咬 遥 姚 窑 谣
+ye 也 业 夜 叶 野 页 爷 液 冶
+yi 一 以 已 意 义 亿 易 医 艺
+yin 因 引 印 银 音 阴 隐 饮 吟
+ying 应 影 营 英 迎 映 硬 赢 盈
+yo 哟
+yong 用 永 勇 涌 拥 泳 咏 佣 踊
+you 有 又 由 右 友 优 游 油 尤
+yu 于 与 予 余 遇 语 育 雨 玉
+yuan 元 原 员 园 源 远 愿 院 圆
+yue 月 越 约 乐 跃 岳 悦 阅 粤
+yun 运 云 允 孕 韵 晕 匀 蕴
+za 杂 咱 砸 扎
+zai 在 再 载 灾 栽 宰
+zan 咱 赞 暂 攒 簪
+zang 脏 葬 藏 赃
+zao 早 造 遭 糟 凿 灶 枣 澡
+ze 则 责 择 泽 侧
+zei 贼
+zen 怎 谮
+zeng 增 曾 赠 憎 综
+zha 扎 炸 闸 渣 札 轧 铡 眨
+zhai 摘 窄 债 寨 斋
+zhan 站 战 占 展 斩 盏 崭 粘
+zhang 张 长 章 涨 掌 丈 帐 账 仗
+zhao 找 着 照 招 朝 赵 兆 召 罩
+zhe 这 着 者 折 哲 遮 蔗 辙 锗
+zhen 真 阵 镇 针 震 振 珍 诊 枕
+zheng 正 政 证 整 争 征 挣 睁 蒸
+zhi 之 只 知 制 至 治 志 指 直
+zhong 中 重 众 种 钟 终 仲 忠 肿
+zhou 周 州 洲 舟 粥 轴 宙 昼 皱
+zhu 主 住 注 著 助 筑 竹 祝 猪
+zhua 抓 爪 挝
+zhuai 拽
+zhuan 转 专 传 砖 赚 撰
+zhuang 装 状 壮 庄 撞 幢
+zhui 追 坠 缀 赘 锥
+zhun 准 谆 肫
+zhuo 捉 桌 卓 灼 拙 酌 啄
+zi 自 子 字 资 紫 仔 籽 滋 姿
+zong 总 宗 综 纵 踪 棕 粽
+zou 走 奏 揍 邹
+zu 组 族 足 阻 祖 租 卒
+zuan 钻 纂 攥
+zui 最 嘴 罪 醉 咀
+zun 尊 遵 樽
+zuo 作 做 坐 左 座 昨 琢

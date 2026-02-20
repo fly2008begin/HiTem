@@ -296,10 +296,8 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
             if (x < 2) x = 2;
             _canvas.setCursor(x, y);
 
-            // Use Chinese font for mixed content
-            if (Lang::getLanguage() == Language::CN) {
-                _canvas.setFont(&fonts::efontCN_16);
-            }
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print(line.c_str());
             _canvas.setFont(&fonts::AsciiFont8x16);
 
@@ -312,10 +310,8 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
             std::string prefix = dl.isFirstLine ? ">> " : "   ";
             _canvas.setCursor(2, y);
 
-            // Use Chinese font for mixed content
-            if (Lang::getLanguage() == Language::CN) {
-                _canvas.setFont(&fonts::efontCN_16);
-            }
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print((prefix + dl.text).c_str());
             _canvas.setFont(&fonts::AsciiFont8x16);
         }
@@ -544,10 +540,8 @@ void UI::drawMsgHistory(const char* peerCode,
             if (x < 2) x = 2;
             _canvas.setCursor(x, y);
 
-            // Use Chinese font for mixed content
-            if (Lang::getLanguage() == Language::CN) {
-                _canvas.setFont(&fonts::efontCN_16);
-            }
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print(line.c_str());
             _canvas.setFont(&fonts::AsciiFont8x16);
         } else {
@@ -555,10 +549,8 @@ void UI::drawMsgHistory(const char* peerCode,
             std::string prefix = dl.first ? ">> " : "   ";
             _canvas.setCursor(2, y);
 
-            // Use Chinese font for mixed content
-            if (Lang::getLanguage() == Language::CN) {
-                _canvas.setFont(&fonts::efontCN_16);
-            }
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print((prefix + dl.text).c_str());
             _canvas.setFont(&fonts::AsciiFont8x16);
         }
