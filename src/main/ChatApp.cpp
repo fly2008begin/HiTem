@@ -1,6 +1,7 @@
 #include "ChatApp.h"
 #include <cstring>
 #include <cstdio>
+#include <esp_now.h>
 
 void ChatApp::begin() {
     _storage.begin();
@@ -642,13 +643,37 @@ void ChatApp::onPacket(const ReceivedPacket& pkt) {
     if (pkt.len < PACKET_HEADER_SIZE) return;
     const PacketHeader* hdr = (const PacketHeader*)pkt.data;
 
+    // Ignore packets from myself
     if (strncmp(hdr->sender_code, _myCode, PAIRING_CODE_LEN) == 0) return;
 
+    // Check for duplicates
+    if (_comm.isDuplicate(hdr->sender_code, hdr->seq_num)) return;
+    _comm.markSeen(hdr->sender_code, hdr->seq_num);
+
+    // Check if this packet is for me
     bool isBroadcast = true;
     for (int i = 0; i < (int)PAIRING_CODE_LEN; i++) {
         if (hdr->receiver_code[i] != '0') { isBroadcast = false; break; }
     }
-    if (!isBroadcast && strncmp(hdr->receiver_code, _myCode, PAIRING_CODE_LEN) != 0) return;
+    bool isForMe = isBroadcast || strncmp(hdr->receiver_code, _myCode, PAIRING_CODE_LEN) == 0;
+
+    // Relay forwarding: if hop_count > 0 and not for me, relay it
+    if (!isForMe && hdr->hop_count > 0 && hdr->msg_type == MSG_TEXT) {
+        // Decrement hop_count and rebroadcast
+        uint8_t relayBuf[MAX_PACKET_SIZE];
+        memcpy(relayBuf, pkt.data, pkt.len);
+        PacketHeader* relayHdr = (PacketHeader*)relayBuf;
+        relayHdr->hop_count--;
+        relayHdr->crc16 = 0;
+        relayHdr->crc16 = _comm.calcCRC16(relayBuf, pkt.len);
+
+        const uint8_t BROADCAST_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+        esp_now_send(BROADCAST_MAC, relayBuf, pkt.len);
+        return;
+    }
+
+    // If not for me, ignore
+    if (!isForMe) return;
 
     switch (hdr->msg_type) {
         case MSG_PAIR_REQ:     handlePairReq(pkt, hdr); break;
@@ -830,7 +855,8 @@ void ChatApp::sendTextMessage(const std::string& text) {
     if (encLen == 0) return;
 
     uint16_t seq = _comm.getNextSeq();
-    _comm.sendUnicast(_chatPeer.mac, _chatPeer.code, MSG_TEXT, encBuf, encLen);
+    // Send as broadcast with hop_count = 3 for relay support
+    _comm.sendBroadcastWithHops(_chatPeer.code, MSG_TEXT, encBuf, encLen, 3);
 
     ChatMessage msg;
     msg.text = text;
