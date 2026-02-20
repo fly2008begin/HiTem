@@ -407,8 +407,8 @@ void ChatApp::processKeyboard() {
             break;
         }
 
-        // In pinyin mode, letters go to pinyin IME
-        if (_pinyinMode && !keys.fn) {
+        // In pinyin mode with pinyin input, only letters go to IME
+        if (_pinyinMode && !_pinyinIME.getPinyin().empty() && !keys.fn) {
             for (char c : keys.word) {
                 if (c == '`') continue;
                 if (c >= 'a' && c <= 'z') {
@@ -416,7 +416,23 @@ void ChatApp::processKeyboard() {
                     _needRedraw = true;
                 }
             }
+            // When there's pinyin input, ignore other chars
             break;
+        }
+
+        // In pinyin mode without pinyin input, letters go to IME, others pass through
+        if (_pinyinMode && _pinyinIME.getPinyin().empty() && !keys.fn) {
+            bool hasLetter = false;
+            for (char c : keys.word) {
+                if (c >= 'a' && c <= 'z') {
+                    _pinyinIME.inputLetter(c);
+                    _needRedraw = true;
+                    hasLetter = true;
+                    break;
+                }
+            }
+            if (hasLetter) break;
+            // If no letter, fall through to normal input for punctuation
         }
 
         // Normal text input

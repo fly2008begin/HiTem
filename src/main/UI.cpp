@@ -295,7 +295,14 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
             int x = SCREEN_W - tw - 2;
             if (x < 2) x = 2;
             _canvas.setCursor(x, y);
+
+            // Use Chinese font for mixed content
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+            }
             _canvas.print(line.c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
+
             if (isLastLine) {
                 _canvas.setTextColor(ackCol, COL_BG);
                 _canvas.print(ackStr);
@@ -304,7 +311,13 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
             _canvas.setTextColor(COL_TEXT, COL_BG);
             std::string prefix = dl.isFirstLine ? ">> " : "   ";
             _canvas.setCursor(2, y);
+
+            // Use Chinese font for mixed content
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+            }
             _canvas.print((prefix + dl.text).c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
         }
         y += FONT_H;
     }
@@ -349,10 +362,7 @@ void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn, bool piny
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, y + 2);
     if (pinyinMode) {
-        _canvas.setFont(&fonts::efontCN_16);
-        _canvas.print("中");
-        _canvas.setFont(&fonts::AsciiFont8x16);
-        _canvas.print(">");
+        _canvas.print("zh>");
     } else {
         _canvas.print("> ");
     }

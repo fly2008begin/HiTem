@@ -126,11 +126,18 @@ void PinyinIME::updateCandidates() {
 
 std::string PinyinIME::selectCandidate(int index) {
     std::vector<std::string> visible = getVisibleCandidates();
+
+    Serial.printf("PinyinIME::selectCandidate: index=%d, visible.size()=%d, page=%d\n",
+                  index, visible.size(), _currentPage);
+
     if (index >= 0 && index < visible.size()) {
         std::string selected = visible[index];
+        Serial.printf("PinyinIME::selectCandidate: selected='%s'\n", selected.c_str());
         clear();
         return selected;
     }
+
+    Serial.println("PinyinIME::selectCandidate: index out of range");
     return "";
 }
 
