@@ -20,7 +20,7 @@ void PinyinIME::loadDictionary() {
         return;
     }
 
-    // Format: pinyin:char1,char2,char3,...
+    // Format: pinyin char1 char2 char3 ...
     while (file.available()) {
         String line = file.readStringUntil('\n');
         line.trim();
@@ -28,18 +28,20 @@ void PinyinIME::loadDictionary() {
             continue;
         }
 
-        int colonPos = line.indexOf(':');
-        if (colonPos < 0) {
+        // Split by space
+        int firstSpace = line.indexOf(' ');
+        if (firstSpace < 0) {
             continue;
         }
 
-        String pinyin = line.substring(0, colonPos);
-        String chars = line.substring(colonPos + 1);
+        String pinyin = line.substring(0, firstSpace);
+        String chars = line.substring(firstSpace + 1);
+        chars.trim();
 
         std::vector<std::string> charList;
         int start = 0;
         for (int i = 0; i <= chars.length(); i++) {
-            if (i == chars.length() || chars[i] == ',') {
+            if (i == chars.length() || chars[i] == ' ') {
                 if (i > start) {
                     String ch = chars.substring(start, i);
                     ch.trim();
