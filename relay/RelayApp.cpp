@@ -18,19 +18,30 @@ void RelayApp::begin() {
     _seenCacheIdx = 0;
     g_relayApp = this;
 
-    // Detect LED pin based on board
-    #if defined(CONFIG_IDF_TARGET_ESP32C3)
-        _ledPin = 8; // ESP32-C3-DevKitM-1
-    #elif defined(CONFIG_IDF_TARGET_ESP32S3)
-        _ledPin = 21; // Common for ESP32-S3
-    #elif defined(CONFIG_IDF_TARGET_ESP32S2)
-        _ledPin = 15; // Common for ESP32-S2
+    // Get LED configuration from build flags, or use defaults
+    #ifdef RELAY_LED_PIN
+        _ledPin = RELAY_LED_PIN;
     #else
-        _ledPin = 2; // Classic ESP32
+        // Detect LED pin based on board
+        #if defined(CONFIG_IDF_TARGET_ESP32C3)
+            _ledPin = 8; // ESP32-C3-DevKitM-1
+        #elif defined(CONFIG_IDF_TARGET_ESP32S3)
+            _ledPin = 21; // Common for ESP32-S3
+        #elif defined(CONFIG_IDF_TARGET_ESP32S2)
+            _ledPin = 15; // Common for ESP32-S2
+        #else
+            _ledPin = 2; // Classic ESP32
+        #endif
+    #endif
+
+    #ifdef RELAY_LED_ACTIVE_HIGH
+        _ledActiveHigh = (RELAY_LED_ACTIVE_HIGH != 0);
+    #else
+        _ledActiveHigh = true; // Default: HIGH to turn on
     #endif
 
     pinMode(_ledPin, OUTPUT);
-    digitalWrite(_ledPin, HIGH);
+    digitalWrite(_ledPin, _ledActiveHigh ? HIGH : LOW); // Turn on
 
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
@@ -55,7 +66,7 @@ void RelayApp::begin() {
 
     Serial.println("Relay ready");
     delay(1000);
-    digitalWrite(_ledPin, LOW);
+    digitalWrite(_ledPin, _ledActiveHigh ? LOW : HIGH); // Turn off
 }
 
 void RelayApp::update() {
@@ -68,12 +79,23 @@ void RelayApp::onPacketReceived(const uint8_t* mac, const uint8_t* data, int len
 
     const PacketHeader* hdr = (const PacketHeader*)data;
 
+    Serial.printf("Received: sender=%.*s, receiver=%.*s, type=%d, hop=%d, len=%d\n",
+                  PAIRING_CODE_LEN, hdr->sender_code,
+                  PAIRING_CODE_LEN, hdr->receiver_code,
+                  hdr->msg_type, hdr->hop_count, len);
+
     // Check for duplicates
-    if (isDuplicate(hdr->sender_code, hdr->seq_num)) return;
+    if (isDuplicate(hdr->sender_code, hdr->seq_num)) {
+        Serial.println("Duplicate - ignored");
+        return;
+    }
     markSeen(hdr->sender_code, hdr->seq_num);
 
     // Only relay MSG_TEXT with hop_count > 0
-    if (hdr->msg_type != MSG_TEXT || hdr->hop_count == 0) return;
+    if (hdr->msg_type != MSG_TEXT || hdr->hop_count == 0) {
+        Serial.printf("Not relaying: type=%d, hop=%d\n", hdr->msg_type, hdr->hop_count);
+        return;
+    }
 
     // Verify CRC
     uint8_t buf[MAX_PACKET_SIZE];
@@ -82,7 +104,10 @@ void RelayApp::onPacketReceived(const uint8_t* mac, const uint8_t* data, int len
     uint16_t receivedCRC = checkHdr->crc16;
     checkHdr->crc16 = 0;
     uint16_t calculatedCRC = calcCRC16(buf, len);
-    if (receivedCRC != calculatedCRC) return;
+    if (receivedCRC != calculatedCRC) {
+        Serial.printf("CRC mismatch: received=%04X, calculated=%04X\n", receivedCRC, calculatedCRC);
+        return;
+    }
 
     // Decrement hop_count and recalculate CRC
     PacketHeader* relayHdr = (PacketHeader*)buf;
@@ -92,12 +117,14 @@ void RelayApp::onPacketReceived(const uint8_t* mac, const uint8_t* data, int len
 
     // Rebroadcast
     const uint8_t BROADCAST_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-    esp_now_send(BROADCAST_MAC, buf, len);
+    esp_err_t result = esp_now_send(BROADCAST_MAC, buf, len);
+
+    Serial.printf("Relayed with hop=%d, result=%d\n", relayHdr->hop_count, result);
 
     // Flash LED
-    digitalWrite(_ledPin, HIGH);
+    digitalWrite(_ledPin, _ledActiveHigh ? HIGH : LOW); // Turn on
     delay(50);
-    digitalWrite(_ledPin, LOW);
+    digitalWrite(_ledPin, _ledActiveHigh ? LOW : HIGH); // Turn off
 }
 
 bool RelayApp::isDuplicate(const char senderCode[PAIRING_CODE_LEN], uint16_t seq) {

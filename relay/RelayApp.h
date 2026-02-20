@@ -26,4 +26,5 @@ private:
 
     // LED pin (board-specific, will be set in begin())
     int _ledPin;
+    bool _ledActiveHigh; // true = HIGH to turn on, false = LOW to turn on
 };
