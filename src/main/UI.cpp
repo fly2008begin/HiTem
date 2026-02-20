@@ -317,7 +317,7 @@ void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn, bool piny
     int y = SCREEN_H - INPUT_LINE_H;
 
     // Draw pinyin candidates above input line if in pinyin mode
-    if (pinyinMode && pinyin && candidates && !candidates->empty()) {
+    if (pinyinMode && pinyin && strlen(pinyin) > 0) {
         int candY = y - FONT_H - 2;
         _canvas.fillRect(0, candY, SCREEN_W, FONT_H + 2, COL_BG);
         _canvas.setFont(&fonts::efontCN_16);
@@ -328,12 +328,15 @@ void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn, bool piny
         snprintf(buf, sizeof(buf), "%s:", pinyin);
         _canvas.print(buf);
 
-        int x = _canvas.getCursorX() + 4;
-        for (int i = 0; i < candidates->size() && i < 5; i++) {
-            _canvas.setCursor(x, candY);
-            snprintf(buf, sizeof(buf), "%d.%s ", i + 1, (*candidates)[i].c_str());
-            _canvas.print(buf);
-            x = _canvas.getCursorX() + 2;
+        // Show candidates if available
+        if (candidates && !candidates->empty()) {
+            int x = _canvas.getCursorX() + 4;
+            for (int i = 0; i < candidates->size() && i < 5; i++) {
+                _canvas.setCursor(x, candY);
+                snprintf(buf, sizeof(buf), "%d.%s ", i + 1, (*candidates)[i].c_str());
+                _canvas.print(buf);
+                x = _canvas.getCursorX() + 2;
+            }
         }
         _canvas.setFont(&fonts::AsciiFont8x16);
     }
@@ -575,22 +578,42 @@ void UI::drawHelpScreen() {
     _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
-    const char* lines[] = {
-        "Up/Dn  Nav",
-        "Enter  Select/Send",
-        "Esc    Back to menu",
-        "Del    Delete item",
-        "Fn+Up/Dn  Scroll chat",
-        "Lt/Rt    Menu L/R",
-    };
     int startY = STATUS_BAR_H + 2;
-    for (int i = 0; i < 6; i++) {
-        int y = startY + i * FONT_H;
-        if (y + FONT_H > SCREEN_H) break;
-        _canvas.setTextColor(COL_TEXT, COL_BG);
-        _canvas.setCursor(4, y);
-        _canvas.print(lines[i]);
+    _canvas.setTextColor(COL_TEXT, COL_BG);
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        const char* linesCN[] = {
+            ";/.  上/下",
+            "Enter  选择/发送",
+            "Esc    返回菜单",
+            "Del    删除",
+            "Fn+;/.  滚动聊天",
+            ",//    菜单左/右",
+        };
+        for (int i = 0; i < 6; i++) {
+            int y = startY + i * FONT_H;
+            if (y + FONT_H > SCREEN_H) break;
+            _canvas.setCursor(4, y);
+            _canvas.print(linesCN[i]);
+        }
+    } else {
+        const char* lines[] = {
+            "Up/Dn  Nav",
+            "Enter  Select/Send",
+            "Esc    Back to menu",
+            "Del    Delete item",
+            "Fn+Up/Dn  Scroll chat",
+            "Lt/Rt    Menu L/R",
+        };
+        for (int i = 0; i < 6; i++) {
+            int y = startY + i * FONT_H;
+            if (y + FONT_H > SCREEN_H) break;
+            _canvas.setCursor(4, y);
+            _canvas.print(lines[i]);
+        }
     }
+    _canvas.setFont(&fonts::AsciiFont8x16);
 
     _canvas.pushSprite(_display, 0, 0);
 }
