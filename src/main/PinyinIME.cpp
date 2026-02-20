@@ -12,17 +12,24 @@ void PinyinIME::begin() {
 
 void PinyinIME::loadDictionary() {
     if (!SD.begin()) {
+        Serial.println("PinyinIME: SD.begin() failed");
         return;
     }
 
     File file = SD.open("/chat/pinyin_dict.txt", FILE_READ);
     if (!file) {
+        Serial.println("PinyinIME: Failed to open /chat/pinyin_dict.txt");
         return;
     }
+
+    Serial.println("PinyinIME: Loading dictionary...");
+    int lineCount = 0;
+    int entryCount = 0;
 
     // Format: pinyin char1 char2 char3 ...
     while (file.available()) {
         String line = file.readStringUntil('\n');
+        lineCount++;
         line.trim();
         if (line.length() == 0 || line.startsWith("#")) {
             continue;
@@ -55,11 +62,15 @@ void PinyinIME::loadDictionary() {
 
         if (charList.size() > 0) {
             _dict[pinyin.c_str()] = charList;
+            entryCount++;
         }
     }
 
     file.close();
     _dictLoaded = (_dict.size() > 0);
+
+    Serial.printf("PinyinIME: Loaded %d entries from %d lines\n", entryCount, lineCount);
+    Serial.printf("PinyinIME: Dictionary size: %d\n", _dict.size());
 }
 
 void PinyinIME::inputLetter(char c) {

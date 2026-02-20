@@ -346,7 +346,10 @@ void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn, bool piny
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, y + 2);
     if (pinyinMode) {
-        _canvas.print("中>");
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("中");
+        _canvas.setFont(&fonts::AsciiFont8x16);
+        _canvas.print(">");
     } else {
         _canvas.print("> ");
     }
@@ -562,7 +565,14 @@ void UI::drawHelpScreen() {
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Help (Esc=back)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("帮助 (Esc=返回)");
+    } else {
+        _canvas.print("Help (Esc=back)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     const char* lines[] = {
@@ -590,7 +600,14 @@ void UI::drawRangeTest(const char* peerCode, int sent, int recv,
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Range Test (Esc=back)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("拉距测试 (Esc=返回)");
+    } else {
+        _canvas.print("Range Test (Esc=back)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     int y = STATUS_BAR_H + 4;
@@ -598,9 +615,18 @@ void UI::drawRangeTest(const char* peerCode, int sent, int recv,
     if (!active) {
         _canvas.setTextColor(COL_DIM, COL_BG);
         _canvas.setCursor(8, y);
-        _canvas.print("No paired device");
-        _canvas.setCursor(8, y + FONT_H);
-        _canvas.print("Pair first, then Enter");
+
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+            _canvas.print("无配对设备");
+            _canvas.setCursor(8, y + FONT_H);
+            _canvas.print("请先配对设备");
+        } else {
+            _canvas.print("No paired device");
+            _canvas.setCursor(8, y + FONT_H);
+            _canvas.print("Pair first, then Enter");
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
     } else {
         char buf[40];
         _canvas.setTextColor(COL_TEXT, COL_BG);
@@ -623,11 +649,25 @@ void UI::drawRangeTest(const char* peerCode, int sent, int recv,
         if (signalLost) {
             _canvas.setTextColor(COL_ERR, COL_BG);
             _canvas.setCursor(8, y);
-            _canvas.print("!! SIGNAL LOST !!");
+
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+                _canvas.print("!! 信号丢失 !!");
+            } else {
+                _canvas.print("!! SIGNAL LOST !!");
+            }
+            _canvas.setFont(&fonts::AsciiFont8x16);
         } else {
             _canvas.setTextColor(COL_PRIMARY, COL_BG);
             _canvas.setCursor(8, y);
-            _canvas.print("Signal OK");
+
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+                _canvas.print("信号正常");
+            } else {
+                _canvas.print("Signal OK");
+            }
+            _canvas.setFont(&fonts::AsciiFont8x16);
         }
     }
 
