@@ -46,23 +46,40 @@ void PinyinIME::loadDictionary() {
         chars.trim();
 
         std::vector<std::string> charList;
-        int start = 0;
-        for (int i = 0; i <= chars.length(); i++) {
-            if (i == chars.length() || chars[i] == ' ') {
-                if (i > start) {
-                    String ch = chars.substring(start, i);
-                    ch.trim();
-                    if (ch.length() > 0) {
-                        charList.push_back(ch.c_str());
-                    }
-                }
-                start = i + 1;
+
+        // Split by space - handle UTF-8 properly
+        while (chars.length() > 0) {
+            chars.trim();
+            if (chars.length() == 0) break;
+
+            int spacePos = chars.indexOf(' ');
+            String ch;
+            if (spacePos >= 0) {
+                ch = chars.substring(0, spacePos);
+                chars = chars.substring(spacePos + 1);
+            } else {
+                ch = chars;
+                chars = "";
+            }
+
+            ch.trim();
+            if (ch.length() > 0) {
+                charList.push_back(ch.c_str());
             }
         }
 
         if (charList.size() > 0) {
             _dict[pinyin.c_str()] = charList;
             entryCount++;
+
+            // Debug: print first entry
+            if (entryCount == 1) {
+                Serial.printf("PinyinIME: First entry '%s' has %d candidates: ", pinyin.c_str(), charList.size());
+                for (int i = 0; i < std::min(3, (int)charList.size()); i++) {
+                    Serial.printf("'%s' ", charList[i].c_str());
+                }
+                Serial.println();
+            }
         }
     }
 

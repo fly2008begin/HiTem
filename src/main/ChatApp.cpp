@@ -299,6 +299,8 @@ void ChatApp::processKeyboard() {
 
         // In pinyin mode with candidates, handle candidate selection
         if (_pinyinMode && !_pinyinIME.getPinyin().empty()) {
+            bool handled = false;
+
             // Check for number keys 1-5 to select candidates
             for (char c : keys.word) {
                 if (c >= '1' && c <= '5') {
@@ -309,9 +311,11 @@ void ChatApp::processKeyboard() {
                         _inputCursorPos += selected.length();
                     }
                     _needRedraw = true;
+                    handled = true;
                     break;
                 }
             }
+            if (handled) break;
 
             // ;/. for page up/down in candidates
             if (hasNav) {
