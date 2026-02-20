@@ -68,9 +68,11 @@ SD 卡根目录/
 
 没有此文件时，拼音输入不可用（英文输入正常使用）。
 
-### 中继固件（ESP32-C3）
+### 中继固件（ESP32）
 
-用 USB 连接 ESP32-C3 开发板，然后：
+#### 基本刷写
+
+用 USB 连接 ESP32 开发板，然后：
 
 ```bash
 pio run -e relay -t upload
@@ -81,6 +83,67 @@ pio run -e relay -t upload
 刷写完成后，中继即可使用 — 只需通电。开机时板载 LED 亮1秒表示就绪，每次转发消息时 LED 短闪。
 
 **注意：** 中继固件兼容所有 ESP32 系列（C3/S2/S3/经典款）。修改 `platformio.ini` 中的 `board` 以匹配你的硬件。
+
+#### 自定义 LED 配置
+
+如果默认 LED 引脚或极性不正确，可在 `platformio.ini` 中配置：
+
+```ini
+[env:relay]
+platform = espressif32
+board = esp32-c3-devkitm-1
+framework = arduino
+monitor_speed = 115200
+upload_speed = 460800
+build_src_filter = +<../relay/*> +<shared/*>
+build_flags =
+    -Isrc/shared
+    -DRELAY_LED_PIN=2           ; LED GPIO 引脚号
+    -DRELAY_LED_ACTIVE_HIGH=0   ; 0 = 低电平点亮, 1 = 高电平点亮
+```
+
+**常见开发板 LED 配置：**
+
+| 开发板 | LED 引脚 | 极性 |
+|--------|---------|------|
+| ESP32-C3-DevKitM-1 | 8 | 高电平点亮 (1) |
+| ESP32-DevKitC | 2 | 高电平点亮 (1) |
+| ESP32-S2-DevKitM-1 | 15 | 高电平点亮 (1) |
+| ESP32-S3-DevKitC-1 | 21 | 高电平点亮 (1) |
+
+#### 调试中继
+
+连接串口监视器查看中继工作状态：
+
+```bash
+pio device monitor -e relay
+```
+
+正常工作时会看到：
+
+```
+Relay ready
+Received: sender=123456, receiver=789012, type=1, hop=3, len=250
+Relayed with hop=2, result=0
+```
+
+**输出说明：**
+- `sender`: 发送者配对码
+- `receiver`: 接收者配对码
+- `type`: 消息类型（1 = 文本消息）
+- `hop`: 剩余跳数
+- `result`: 转发结果（0 = 成功）
+
+#### 测试中继功能
+
+1. 将两台 M5Cardputer 放在超出直接通信距离的位置
+2. 在中间放置中继设备（通电即可）
+3. 发送消息，观察：
+   - 中继 LED 闪烁表示正在转发
+   - 串口输出显示转发详情
+   - 接收方成功收到消息
+
+**提示：** 可以串联多个中继设备（最多3跳），每个中继会将 `hop_count` 减1后继续转发。
 
 ## 使用方法
 
