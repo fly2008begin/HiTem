@@ -281,7 +281,12 @@ void ChatApp::processKeyboard() {
         // Check for Fn+Space to toggle pinyin mode
         if (keys.fn && keys.space) {
             if (!_pinyinIME.isDictionaryLoaded()) {
-                // Dictionary not loaded, ignore toggle
+                // Show warning - dictionary not loaded
+                // For now, just beep
+                if (_soundEnabled && _volume != VOL_MUTE) {
+                    M5Cardputer.Speaker.setVolume(VOLUME_VALUES[_volume]);
+                    M5Cardputer.Speaker.tone(1000, 200);
+                }
             } else {
                 _pinyinMode = !_pinyinMode;
                 if (!_pinyinMode) {

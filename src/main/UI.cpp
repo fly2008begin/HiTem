@@ -122,13 +122,26 @@ void UI::drawDeviceList(const std::vector<std::string>& devices, int selected,
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Devices (Esc=back Del=rm)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("设备 (Esc=返回 Del=删除)");
+    } else {
+        _canvas.print("Devices (Esc=back Del=rm)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     if (devices.empty()) {
         _canvas.setTextColor(COL_DIM, COL_BG);
         _canvas.setCursor(8, STATUS_BAR_H + 20);
-        _canvas.print("No paired devices");
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+            _canvas.print("无配对设备");
+        } else {
+            _canvas.print("No paired devices");
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
     } else {
         int startY = STATUS_BAR_H + 2;
         for (int i = 0; i < (int)devices.size(); i++) {
@@ -155,10 +168,20 @@ void UI::drawDeviceList(const std::vector<std::string>& devices, int selected,
         _canvas.drawRect(boxX, boxY, boxW, boxH, COL_PRIMARY);
         _canvas.setTextColor(COL_TEXT, COL_BG);
         _canvas.setCursor(boxX + 8, boxY + 4);
-        _canvas.print("Delete device?");
-        _canvas.setTextColor(COL_WARN, COL_BG);
-        _canvas.setCursor(boxX + 8, boxY + 22);
-        _canvas.print("Enter=Yes Other=No");
+
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+            _canvas.print("删除设备?");
+            _canvas.setTextColor(COL_WARN, COL_BG);
+            _canvas.setCursor(boxX + 8, boxY + 22);
+            _canvas.print("Enter=是 其他=否");
+        } else {
+            _canvas.print("Delete device?");
+            _canvas.setTextColor(COL_WARN, COL_BG);
+            _canvas.setCursor(boxX + 8, boxY + 22);
+            _canvas.print("Enter=Yes Other=No");
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
     }
 
     _canvas.pushSprite(_display, 0, 0);
@@ -170,7 +193,14 @@ void UI::drawPairingScreen(const char* myCode, const char* status) {
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Pairing (Esc=cancel)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("配对中... (Esc=取消)");
+    } else {
+        _canvas.print("Pairing (Esc=cancel)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     _canvas.setTextColor(COL_TEXT, COL_BG);
@@ -181,7 +211,14 @@ void UI::drawPairingScreen(const char* myCode, const char* status) {
 
     _canvas.setTextColor(COL_DIM, COL_BG);
     _canvas.setCursor(8, STATUS_BAR_H + 28);
-    _canvas.print("Searching for peers...");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("搜索设备中...");
+    } else {
+        _canvas.print("Searching for peers...");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
 
     _canvas.setTextColor(COL_WARN, COL_BG);
     _canvas.setCursor(8, STATUS_BAR_H + 52);
@@ -365,7 +402,14 @@ void UI::drawSettings(int selected, bool soundOn, uint8_t volume,
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Settings (Esc=back)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("设置 (Esc=返回)");
+    } else {
+        _canvas.print("Settings (Esc=back)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     const char* volNames[] = {"Mute", "Low", "Med", "High"};
@@ -386,13 +430,23 @@ void UI::drawSettings(int selected, bool soundOn, uint8_t volume,
     const char* langLabel = (language == 0) ? "EN" : "中文";
 
     char items[7][32];
-    snprintf(items[0], sizeof(items[0]), "Sound: %s", soundOn ? "ON" : "OFF");
-    snprintf(items[1], sizeof(items[1]), "Volume: %s", volStr);
-    snprintf(items[2], sizeof(items[2]), "Screen: %s", scrLabel);
-    snprintf(items[3], sizeof(items[3]), "Sleep: %s", slpLabel);
-    snprintf(items[4], sizeof(items[4]), "Lang: %s", langLabel);
-    snprintf(items[5], sizeof(items[5]), "Battery: %d%%", battPct);
-    snprintf(items[6], sizeof(items[6]), "Back");
+    if (Lang::getLanguage() == Language::CN) {
+        snprintf(items[0], sizeof(items[0]), "声音: %s", soundOn ? "开" : "关");
+        snprintf(items[1], sizeof(items[1]), "音量: %s", volStr);
+        snprintf(items[2], sizeof(items[2]), "熄屏: %s", scrLabel);
+        snprintf(items[3], sizeof(items[3]), "休眠: %s", slpLabel);
+        snprintf(items[4], sizeof(items[4]), "语言: %s", langLabel);
+        snprintf(items[5], sizeof(items[5]), "电量: %d%%", battPct);
+        snprintf(items[6], sizeof(items[6]), "返回");
+    } else {
+        snprintf(items[0], sizeof(items[0]), "Sound: %s", soundOn ? "ON" : "OFF");
+        snprintf(items[1], sizeof(items[1]), "Volume: %s", volStr);
+        snprintf(items[2], sizeof(items[2]), "Screen: %s", scrLabel);
+        snprintf(items[3], sizeof(items[3]), "Sleep: %s", slpLabel);
+        snprintf(items[4], sizeof(items[4]), "Lang: %s", langLabel);
+        snprintf(items[5], sizeof(items[5]), "Battery: %d%%", battPct);
+        snprintf(items[6], sizeof(items[6]), "Back");
+    }
 
     int startY = STATUS_BAR_H + 2;
     for (int i = 0; i < 7; i++) {
@@ -408,8 +462,8 @@ void UI::drawSettings(int selected, bool soundOn, uint8_t volume,
             _canvas.print("  ");
         }
 
-        // Use Chinese font for language item
-        if (i == 4 && language == 1) {
+        // Use Chinese font for Chinese text
+        if (Lang::getLanguage() == Language::CN) {
             _canvas.setFont(&fonts::efontCN_16);
         }
         _canvas.print(items[i]);
