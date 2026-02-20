@@ -36,6 +36,10 @@ public:
     uint16_t getSleepTimeout();    // seconds, default 1800 (30 min), 0=disabled
     void setSleepTimeout(uint16_t sec);
 
+    // Language settings
+    uint8_t getLanguage();         // 0=EN, 1=CN
+    void setLanguage(uint8_t lang);
+
 private:
     void generateRandomCode(char out[PAIRING_CODE_LEN + 1]);
     char _myCode[PAIRING_CODE_LEN + 1];

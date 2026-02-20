@@ -22,8 +22,8 @@ public:
     // Status bar (battPct < 20 turns bar red, unread shows message count)
     void drawStatusBar(const char* myCode, int battPct, bool connected, int unread = 0);
 
-    // Main menu (5 items now)
-    void drawMenu(const char* myCode, int battPct, int selected, int itemCount, int unread = 0);
+    // Main menu (7 items now)
+    void drawMenu(const char* myCode, int battPct, int selected, int itemCount, int unread = 0, const char** menuNames = nullptr);
 
     // Device list (with optional delete confirmation)
     void drawDeviceList(const std::vector<std::string>& devices, int selected,
@@ -34,17 +34,20 @@ public:
 
     // Chat view (with word wrap)
     void drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset);
-    void drawInputLine(const char* text, int cursorPos, bool cursorOn);
+    void drawInputLine(const char* text, int cursorPos, bool cursorOn, bool pinyinMode = false,
+                       const char* pinyin = nullptr, const std::vector<std::string>* candidates = nullptr);
 
     // Full chat screen refresh
     void drawChatScreen(const char* myCode, int battPct, bool connected,
                         const std::vector<ChatMessage>& msgs, int scrollOffset,
-                        const char* inputText, int cursorPos, bool cursorOn);
+                        const char* inputText, int cursorPos, bool cursorOn,
+                        bool pinyinMode = false, const char* pinyin = nullptr,
+                        const std::vector<std::string>* candidates = nullptr);
 
     // Settings screen
     void drawSettings(int selected, bool soundOn, uint8_t volume,
                       uint16_t screenTimeoutSec, uint16_t sleepTimeoutSec,
-                      int battPct);
+                      int battPct, uint8_t language = 0);
 
     // Message history (read-only chat view)
     void drawMsgHistory(const char* peerCode,
