@@ -24,8 +24,7 @@ void UI::begin(M5GFX* display) {
     _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.setTextSize(1);
 
-    // Load Chinese font for CN mode
-    _canvas.loadFont(efontCN_16);
+    // Chinese font will be set dynamically when needed
 }
 
 void UI::flush() {
