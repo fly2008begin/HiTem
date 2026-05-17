@@ -1,6 +1,10 @@
 #include "UI.h"
+#include "Lang.h"
 #include <cstdio>
 #include <M5GFX.h>
+
+// Chinese font (efontCN_16)
+#include <lgfx/v1/lgfx_fonts.hpp>
 
 // Cyber-glow color scheme
 static constexpr uint16_t COL_BG       = TFT_BLACK;
@@ -19,6 +23,8 @@ void UI::begin(M5GFX* display) {
     _canvas.createSprite(SCREEN_W, SCREEN_H);
     _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.setTextSize(1);
+
+    // Chinese font will be set dynamically when needed
 }
 
 void UI::flush() {
@@ -51,11 +57,12 @@ void UI::drawStatusBar(const char* myCode, int battPct, bool connected, int unre
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 }
 
-void UI::drawMenu(const char* myCode, int battPct, int selected, int itemCount, int unread) {
+void UI::drawMenu(const char* myCode, int battPct, int selected, int itemCount, int unread, const char** menuNames) {
     _canvas.fillSprite(COL_BG);
     drawStatusBar(myCode, battPct, false, unread);
 
-    const char* names[] = {"Chat", "Devices", "Pair", "Range", "History", "Help", "Settings"};
+    const char* defaultNames[] = {"Chat", "Devices", "Pair", "Range", "History", "Help", "Settings"};
+    const char** names = menuNames ? menuNames : defaultNames;
     const char* icons[] = {"Hi", "[=]", "}{", "<->", "[...]", "[?]", "[*]"};
 
     // Icon area — centered large symbol
@@ -63,6 +70,7 @@ void UI::drawMenu(const char* myCode, int battPct, int selected, int itemCount, 
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
 
     // Draw icon centered, using 2x text size for emphasis
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.setTextSize(2);
     const char* icon = icons[selected];
     int iconW = strlen(icon) * CHAR_W * 2;
@@ -73,13 +81,23 @@ void UI::drawMenu(const char* myCode, int battPct, int selected, int itemCount, 
 
     // Name with left/right arrows
     int nameY = iconY + 40;
+
+    // Use Chinese font if needed
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+    } else {
+        _canvas.setFont(&fonts::AsciiFont8x16);
+    }
+
     char label[40];
     snprintf(label, sizeof(label), "< %s >", names[selected]);
-    int labelW = strlen(label) * CHAR_W;
+    int labelW = _canvas.textWidth(label);
     int labelX = (SCREEN_W - labelW) / 2;
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(labelX, nameY);
     _canvas.print(label);
+
+    _canvas.setFont(&fonts::AsciiFont8x16);
 
     // Page indicator dots
     int dotY = nameY + 22;
@@ -104,13 +122,26 @@ void UI::drawDeviceList(const std::vector<std::string>& devices, int selected,
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Devices (Esc=back Del=rm)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("设备 (Esc=返回 Del=删除)");
+    } else {
+        _canvas.print("Devices (Esc=back Del=rm)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     if (devices.empty()) {
         _canvas.setTextColor(COL_DIM, COL_BG);
         _canvas.setCursor(8, STATUS_BAR_H + 20);
-        _canvas.print("No paired devices");
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+            _canvas.print("无配对设备");
+        } else {
+            _canvas.print("No paired devices");
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
     } else {
         int startY = STATUS_BAR_H + 2;
         for (int i = 0; i < (int)devices.size(); i++) {
@@ -137,10 +168,20 @@ void UI::drawDeviceList(const std::vector<std::string>& devices, int selected,
         _canvas.drawRect(boxX, boxY, boxW, boxH, COL_PRIMARY);
         _canvas.setTextColor(COL_TEXT, COL_BG);
         _canvas.setCursor(boxX + 8, boxY + 4);
-        _canvas.print("Delete device?");
-        _canvas.setTextColor(COL_WARN, COL_BG);
-        _canvas.setCursor(boxX + 8, boxY + 22);
-        _canvas.print("Enter=Yes Other=No");
+
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+            _canvas.print("删除设备?");
+            _canvas.setTextColor(COL_WARN, COL_BG);
+            _canvas.setCursor(boxX + 8, boxY + 22);
+            _canvas.print("Enter=是 其他=否");
+        } else {
+            _canvas.print("Delete device?");
+            _canvas.setTextColor(COL_WARN, COL_BG);
+            _canvas.setCursor(boxX + 8, boxY + 22);
+            _canvas.print("Enter=Yes Other=No");
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
     }
 
     _canvas.pushSprite(_display, 0, 0);
@@ -152,7 +193,14 @@ void UI::drawPairingScreen(const char* myCode, const char* status) {
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Pairing (Esc=cancel)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("配对中... (Esc=取消)");
+    } else {
+        _canvas.print("Pairing (Esc=cancel)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     _canvas.setTextColor(COL_TEXT, COL_BG);
@@ -163,7 +211,14 @@ void UI::drawPairingScreen(const char* myCode, const char* status) {
 
     _canvas.setTextColor(COL_DIM, COL_BG);
     _canvas.setCursor(8, STATUS_BAR_H + 28);
-    _canvas.print("Searching for peers...");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("搜索设备中...");
+    } else {
+        _canvas.print("Searching for peers...");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
 
     _canvas.setTextColor(COL_WARN, COL_BG);
     _canvas.setCursor(8, STATUS_BAR_H + 52);
@@ -240,7 +295,12 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
             int x = SCREEN_W - tw - 2;
             if (x < 2) x = 2;
             _canvas.setCursor(x, y);
+
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print(line.c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
+
             if (isLastLine) {
                 _canvas.setTextColor(ackCol, COL_BG);
                 _canvas.print(ackStr);
@@ -249,7 +309,11 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
             _canvas.setTextColor(COL_TEXT, COL_BG);
             std::string prefix = dl.isFirstLine ? ">> " : "   ";
             _canvas.setCursor(2, y);
+
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print((prefix + dl.text).c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
         }
         y += FONT_H;
     }
@@ -257,16 +321,47 @@ void UI::drawChat(const std::vector<ChatMessage>& msgs, int scrollOffset) {
 
 // PLACEHOLDER_INPUT
 
-void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn) {
+void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn, bool pinyinMode,
+                        const char* pinyin, const std::vector<std::string>* candidates) {
     int y = SCREEN_H - INPUT_LINE_H;
+
+    // Draw pinyin candidates above input line if in pinyin mode
+    if (pinyinMode && pinyin && strlen(pinyin) > 0) {
+        int candY = y - FONT_H - 2;
+        _canvas.fillRect(0, candY, SCREEN_W, FONT_H + 2, COL_BG);
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.setTextColor(COL_WARN, COL_BG);
+        _canvas.setCursor(2, candY);
+
+        char buf[128];
+        snprintf(buf, sizeof(buf), "%s:", pinyin);
+        _canvas.print(buf);
+
+        // Show candidates if available
+        if (candidates && !candidates->empty()) {
+            int x = _canvas.getCursorX() + 4;
+            for (int i = 0; i < candidates->size() && i < 5; i++) {
+                _canvas.setCursor(x, candY);
+                snprintf(buf, sizeof(buf), "%d.%s ", i + 1, (*candidates)[i].c_str());
+                _canvas.print(buf);
+                x = _canvas.getCursorX() + 2;
+            }
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
+    }
+
     // Separator line above input
     _canvas.drawFastHLine(0, y, SCREEN_W, COL_DIM);
     _canvas.fillRect(0, y + 1, SCREEN_W, INPUT_LINE_H - 1, COL_BG);
 
-    // Cyan prompt, white text
+    // Cyan prompt with CN/EN indicator
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, y + 2);
-    _canvas.print("> ");
+    if (pinyinMode) {
+        _canvas.print("zh>");
+    } else {
+        _canvas.print("> ");
+    }
 
     _canvas.setTextColor(COL_TEXT, COL_BG);
 
@@ -292,15 +387,22 @@ void UI::drawInputLine(const char* text, int cursorPos, bool cursorOn) {
         display += cursorOn ? "_" : " ";
     }
 
+    // Use Chinese font for mixed content
+    if (pinyinMode || Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+    }
     _canvas.print(display.c_str());
+    _canvas.setFont(&fonts::AsciiFont8x16);
 }
 
 void UI::drawChatScreen(const char* myCode, int battPct, bool connected,
                          const std::vector<ChatMessage>& msgs, int scrollOffset,
-                         const char* inputText, int cursorPos, bool cursorOn) {
+                         const char* inputText, int cursorPos, bool cursorOn,
+                         bool pinyinMode, const char* pinyin,
+                         const std::vector<std::string>* candidates) {
     drawStatusBar(myCode, battPct, connected);
     drawChat(msgs, scrollOffset);
-    drawInputLine(inputText, cursorPos, cursorOn);
+    drawInputLine(inputText, cursorPos, cursorOn, pinyinMode, pinyin, candidates);
     _canvas.pushSprite(_display, 0, 0);
 }
 
@@ -308,11 +410,18 @@ void UI::drawChatScreen(const char* myCode, int battPct, bool connected,
 
 void UI::drawSettings(int selected, bool soundOn, uint8_t volume,
                       uint16_t screenTimeoutSec, uint16_t sleepTimeoutSec,
-                      int battPct) {
+                      int battPct, uint8_t language) {
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Settings (Esc=back)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("设置 (Esc=返回)");
+    } else {
+        _canvas.print("Settings (Esc=back)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     const char* volNames[] = {"Mute", "Low", "Med", "High"};
@@ -330,16 +439,29 @@ void UI::drawSettings(int selected, bool soundOn, uint8_t volume,
     else if (sleepTimeoutSec <= 1800) slpLabel = "30m";
     else slpLabel = "60m";
 
-    char items[6][32];
-    snprintf(items[0], sizeof(items[0]), "Sound: %s", soundOn ? "ON" : "OFF");
-    snprintf(items[1], sizeof(items[1]), "Volume: %s", volStr);
-    snprintf(items[2], sizeof(items[2]), "Screen: %s", scrLabel);
-    snprintf(items[3], sizeof(items[3]), "Sleep: %s", slpLabel);
-    snprintf(items[4], sizeof(items[4]), "Battery: %d%%", battPct);
-    snprintf(items[5], sizeof(items[5]), "Back");
+    const char* langLabel = (language == 0) ? "EN" : "中文";
+
+    char items[7][32];
+    if (Lang::getLanguage() == Language::CN) {
+        snprintf(items[0], sizeof(items[0]), "声音: %s", soundOn ? "开" : "关");
+        snprintf(items[1], sizeof(items[1]), "音量: %s", volStr);
+        snprintf(items[2], sizeof(items[2]), "熄屏: %s", scrLabel);
+        snprintf(items[3], sizeof(items[3]), "休眠: %s", slpLabel);
+        snprintf(items[4], sizeof(items[4]), "语言: %s", langLabel);
+        snprintf(items[5], sizeof(items[5]), "电量: %d%%", battPct);
+        snprintf(items[6], sizeof(items[6]), "返回");
+    } else {
+        snprintf(items[0], sizeof(items[0]), "Sound: %s", soundOn ? "ON" : "OFF");
+        snprintf(items[1], sizeof(items[1]), "Volume: %s", volStr);
+        snprintf(items[2], sizeof(items[2]), "Screen: %s", scrLabel);
+        snprintf(items[3], sizeof(items[3]), "Sleep: %s", slpLabel);
+        snprintf(items[4], sizeof(items[4]), "Lang: %s", langLabel);
+        snprintf(items[5], sizeof(items[5]), "Battery: %d%%", battPct);
+        snprintf(items[6], sizeof(items[6]), "Back");
+    }
 
     int startY = STATUS_BAR_H + 2;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         int y = startY + i * FONT_H;
         if (y + FONT_H > SCREEN_H) break;
         if (i == selected) {
@@ -351,7 +473,13 @@ void UI::drawSettings(int selected, bool soundOn, uint8_t volume,
             _canvas.setCursor(2, y);
             _canvas.print("  ");
         }
+
+        // Use Chinese font for Chinese text
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+        }
         _canvas.print(items[i]);
+        _canvas.setFont(&fonts::AsciiFont8x16);
     }
 
     _canvas.pushSprite(_display, 0, 0);
@@ -411,12 +539,20 @@ void UI::drawMsgHistory(const char* peerCode,
             int x = SCREEN_W - tw - 2;
             if (x < 2) x = 2;
             _canvas.setCursor(x, y);
+
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print(line.c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
         } else {
             _canvas.setTextColor(COL_TEXT, COL_BG);
             std::string prefix = dl.first ? ">> " : "   ";
             _canvas.setCursor(2, y);
+
+            // Always use Chinese font for message content (supports both EN and CN)
+            _canvas.setFont(&fonts::efontCN_16);
             _canvas.print((prefix + dl.text).c_str());
+            _canvas.setFont(&fonts::AsciiFont8x16);
         }
         y += FONT_H;
     }
@@ -446,25 +582,52 @@ void UI::drawHelpScreen() {
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Help (Esc=back)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("帮助 (Esc=返回)");
+    } else {
+        _canvas.print("Help (Esc=back)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
-    const char* lines[] = {
-        "Up/Dn  Nav",
-        "Enter  Select/Send",
-        "Esc    Back to menu",
-        "Del    Delete item",
-        "Fn+Up/Dn  Scroll chat",
-        "Lt/Rt    Menu L/R",
-    };
     int startY = STATUS_BAR_H + 2;
-    for (int i = 0; i < 6; i++) {
-        int y = startY + i * FONT_H;
-        if (y + FONT_H > SCREEN_H) break;
-        _canvas.setTextColor(COL_TEXT, COL_BG);
-        _canvas.setCursor(4, y);
-        _canvas.print(lines[i]);
+    _canvas.setTextColor(COL_TEXT, COL_BG);
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        const char* linesCN[] = {
+            ";/.  上/下",
+            "Enter  选择/发送",
+            "Esc    返回菜单",
+            "Del    删除",
+            "Fn+;/.  滚动聊天",
+            ",//    菜单左/右",
+        };
+        for (int i = 0; i < 6; i++) {
+            int y = startY + i * FONT_H;
+            if (y + FONT_H > SCREEN_H) break;
+            _canvas.setCursor(4, y);
+            _canvas.print(linesCN[i]);
+        }
+    } else {
+        const char* lines[] = {
+            "Up/Dn  Nav",
+            "Enter  Select/Send",
+            "Esc    Back to menu",
+            "Del    Delete item",
+            "Fn+Up/Dn  Scroll chat",
+            "Lt/Rt    Menu L/R",
+        };
+        for (int i = 0; i < 6; i++) {
+            int y = startY + i * FONT_H;
+            if (y + FONT_H > SCREEN_H) break;
+            _canvas.setCursor(4, y);
+            _canvas.print(lines[i]);
+        }
     }
+    _canvas.setFont(&fonts::AsciiFont8x16);
 
     _canvas.pushSprite(_display, 0, 0);
 }
@@ -474,7 +637,14 @@ void UI::drawRangeTest(const char* peerCode, int sent, int recv,
     _canvas.fillSprite(COL_BG);
     _canvas.setTextColor(COL_PRIMARY, COL_BG);
     _canvas.setCursor(2, 2);
-    _canvas.print("Range Test (Esc=back)");
+
+    if (Lang::getLanguage() == Language::CN) {
+        _canvas.setFont(&fonts::efontCN_16);
+        _canvas.print("拉距测试 (Esc=返回)");
+    } else {
+        _canvas.print("Range Test (Esc=back)");
+    }
+    _canvas.setFont(&fonts::AsciiFont8x16);
     _canvas.drawFastHLine(0, STATUS_BAR_H - 1, SCREEN_W, COL_DIM);
 
     int y = STATUS_BAR_H + 4;
@@ -482,9 +652,18 @@ void UI::drawRangeTest(const char* peerCode, int sent, int recv,
     if (!active) {
         _canvas.setTextColor(COL_DIM, COL_BG);
         _canvas.setCursor(8, y);
-        _canvas.print("No paired device");
-        _canvas.setCursor(8, y + FONT_H);
-        _canvas.print("Pair first, then Enter");
+
+        if (Lang::getLanguage() == Language::CN) {
+            _canvas.setFont(&fonts::efontCN_16);
+            _canvas.print("无配对设备");
+            _canvas.setCursor(8, y + FONT_H);
+            _canvas.print("请先配对设备");
+        } else {
+            _canvas.print("No paired device");
+            _canvas.setCursor(8, y + FONT_H);
+            _canvas.print("Pair first, then Enter");
+        }
+        _canvas.setFont(&fonts::AsciiFont8x16);
     } else {
         char buf[40];
         _canvas.setTextColor(COL_TEXT, COL_BG);
@@ -507,11 +686,25 @@ void UI::drawRangeTest(const char* peerCode, int sent, int recv,
         if (signalLost) {
             _canvas.setTextColor(COL_ERR, COL_BG);
             _canvas.setCursor(8, y);
-            _canvas.print("!! SIGNAL LOST !!");
+
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+                _canvas.print("!! 信号丢失 !!");
+            } else {
+                _canvas.print("!! SIGNAL LOST !!");
+            }
+            _canvas.setFont(&fonts::AsciiFont8x16);
         } else {
             _canvas.setTextColor(COL_PRIMARY, COL_BG);
             _canvas.setCursor(8, y);
-            _canvas.print("Signal OK");
+
+            if (Lang::getLanguage() == Language::CN) {
+                _canvas.setFont(&fonts::efontCN_16);
+                _canvas.print("信号正常");
+            } else {
+                _canvas.print("Signal OK");
+            }
+            _canvas.setFont(&fonts::AsciiFont8x16);
         }
     }
 

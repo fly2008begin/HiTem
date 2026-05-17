@@ -5,6 +5,8 @@
 #include "Storage.h"
 #include "MsgStore.h"
 #include "PowerManager.h"
+#include "Lang.h"
+#include "PinyinIME.h"
 #include <M5Cardputer.h>
 
 enum class AppState {
@@ -82,6 +84,11 @@ private:
     uint8_t _volume;
     uint16_t _screenTimeout;
     uint16_t _sleepTimeout;
+    uint8_t _language;
+
+    // Pinyin input state
+    bool _pinyinMode;
+    PinyinIME _pinyinIME;
 
     // Pairing state
     uint8_t _myPubKey[ECDH_PUBKEY_SIZE];

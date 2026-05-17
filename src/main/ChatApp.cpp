@@ -52,7 +52,15 @@ void ChatApp::begin() {
     _volume = _storage.getVolume();
     _screenTimeout = _storage.getScreenTimeout();
     _sleepTimeout = _storage.getSleepTimeout();
+    _language = _storage.getLanguage();
+    _pinyinMode = false;
     memset(_pairingStatus, 0, sizeof(_pairingStatus));
+
+    // Initialize language
+    Lang::setLanguage((_language == 0) ? Language::EN : Language::CN);
+
+    // Initialize Pinyin IME
+    _pinyinIME.begin();
 
     _powerMgr.begin(_screenTimeout, _sleepTimeout);
 }
@@ -271,14 +279,105 @@ void ChatApp::processKeyboard() {
             _needRedraw = true;
         }
 
+        // Check for Fn+Space to toggle pinyin mode
+        if (keys.fn && keys.space) {
+            if (!_pinyinIME.isDictionaryLoaded()) {
+                // Show warning - dictionary not loaded
+                // For now, just beep
+                if (_soundEnabled && _volume != VOL_MUTE) {
+                    M5Cardputer.Speaker.setVolume(VOLUME_VALUES[_volume]);
+                    M5Cardputer.Speaker.tone(1000, 200);
+                }
+            } else {
+                _pinyinMode = !_pinyinMode;
+                if (!_pinyinMode) {
+                    _pinyinIME.clear();
+                }
+                _needRedraw = true;
+            }
+            break;
+        }
+
+        // In pinyin mode with candidates, handle candidate selection
+        if (_pinyinMode && !_pinyinIME.getPinyin().empty()) {
+            bool handled = false;
+
+            // Check for number keys 1-5 to select candidates
+            for (char c : keys.word) {
+                if (c >= '1' && c <= '5') {
+                    int idx = c - '1';
+                    std::string selected = _pinyinIME.selectCandidate(idx);
+                    if (!selected.empty() && _inputBuf.length() + selected.length() < 200) {
+                        _inputBuf.insert(_inputCursorPos, selected);
+                        _inputCursorPos += selected.length();
+                    }
+                    _needRedraw = true;
+                    handled = true;
+                    break;
+                }
+            }
+            if (handled) break;
+
+            // ;/. for page up/down in candidates
+            if (hasNav) {
+                if (navDir == 'U') {
+                    _pinyinIME.pageUp();
+                    _needRedraw = true;
+                    break;
+                }
+                if (navDir == 'D') {
+                    _pinyinIME.pageDown();
+                    _needRedraw = true;
+                    break;
+                }
+            }
+
+            // Space selects first candidate
+            if (keys.space) {
+                std::string selected = _pinyinIME.selectCandidate(0);
+                if (!selected.empty() && _inputBuf.length() + selected.length() < 200) {
+                    _inputBuf.insert(_inputCursorPos, selected);
+                    _inputCursorPos += selected.length();
+                }
+                _needRedraw = true;
+                break;
+            }
+
+            // Del removes pinyin letter
+            if (keys.del) {
+                _pinyinIME.backspace();
+                _needRedraw = true;
+                break;
+            }
+
+            // Letter keys add to pinyin
+            if (!keys.fn) {
+                for (char c : keys.word) {
+                    if (c >= 'a' && c <= 'z') {
+                        _pinyinIME.inputLetter(c);
+                        _needRedraw = true;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+
         for (char c : keys.word) {
-            if (c == '`') { _state = AppState::MENU; _needRedraw = true; return; }
+            if (c == '`') {
+                _state = AppState::MENU;
+                _pinyinMode = false;
+                _pinyinIME.clear();
+                _needRedraw = true;
+                return;
+            }
         }
 
         if (keys.enter && !_inputBuf.empty()) {
             sendTextMessage(_inputBuf);
             _inputBuf.clear();
             _inputCursorPos = 0;
+            _pinyinIME.clear();
             _needRedraw = true;
         }
         if (keys.del && !_inputBuf.empty() && _inputCursorPos > 0) {
@@ -308,6 +407,35 @@ void ChatApp::processKeyboard() {
             break;
         }
 
+        // In pinyin mode with pinyin input, only letters go to IME
+        if (_pinyinMode && !_pinyinIME.getPinyin().empty() && !keys.fn) {
+            for (char c : keys.word) {
+                if (c == '`') continue;
+                if (c >= 'a' && c <= 'z') {
+                    _pinyinIME.inputLetter(c);
+                    _needRedraw = true;
+                }
+            }
+            // When there's pinyin input, ignore other chars
+            break;
+        }
+
+        // In pinyin mode without pinyin input, letters go to IME, others pass through
+        if (_pinyinMode && _pinyinIME.getPinyin().empty() && !keys.fn) {
+            bool hasLetter = false;
+            for (char c : keys.word) {
+                if (c >= 'a' && c <= 'z') {
+                    _pinyinIME.inputLetter(c);
+                    _needRedraw = true;
+                    hasLetter = true;
+                    break;
+                }
+            }
+            if (hasLetter) break;
+            // If no letter, fall through to normal input for punctuation
+        }
+
+        // Normal text input
         if (!keys.fn) {
             for (char c : keys.word) {
                 if (c == '`') continue;
@@ -318,7 +446,7 @@ void ChatApp::processKeyboard() {
                 }
             }
         }
-        if (keys.space && _inputBuf.length() < 200) {
+        if (keys.space && !_pinyinMode && _inputBuf.length() < 200) {
             _inputBuf.insert(_inputBuf.begin() + _inputCursorPos, ' ');
             _inputCursorPos++;
             _needRedraw = true;
@@ -402,12 +530,12 @@ void ChatApp::processKeyboard() {
         }
 
         if (hasNav) {
-            if (navDir == 'U') { _settingsSel = (_settingsSel > 0) ? _settingsSel - 1 : 5; _needRedraw = true; }
-            if (navDir == 'D') { _settingsSel = (_settingsSel < 5) ? _settingsSel + 1 : 0; _needRedraw = true; }
+            if (navDir == 'U') { _settingsSel = (_settingsSel > 0) ? _settingsSel - 1 : 6; _needRedraw = true; }
+            if (navDir == 'D') { _settingsSel = (_settingsSel < 6) ? _settingsSel + 1 : 0; _needRedraw = true; }
         }
         if (hasArrow) {
-            if (arrow == 'U') { _settingsSel = (_settingsSel > 0) ? _settingsSel - 1 : 5; _needRedraw = true; }
-            if (arrow == 'D') { _settingsSel = (_settingsSel < 5) ? _settingsSel + 1 : 0; _needRedraw = true; }
+            if (arrow == 'U') { _settingsSel = (_settingsSel > 0) ? _settingsSel - 1 : 6; _needRedraw = true; }
+            if (arrow == 'D') { _settingsSel = (_settingsSel < 6) ? _settingsSel + 1 : 0; _needRedraw = true; }
         }
 
         if (keys.enter) {
@@ -441,7 +569,13 @@ void ChatApp::processKeyboard() {
                 _storage.setSleepTimeout(_sleepTimeout);
                 _powerMgr.setDeepSleepTimeout(_sleepTimeout);
                 _needRedraw = true;
-            } else if (_settingsSel == 5) {
+            } else if (_settingsSel == 4) {
+                // Toggle language
+                _language = (_language == 0) ? 1 : 0;
+                _storage.setLanguage(_language);
+                Lang::setLanguage((_language == 0) ? Language::EN : Language::CN);
+                _needRedraw = true;
+            } else if (_settingsSel == 6) {
                 _state = AppState::MENU;
                 _needRedraw = true;
             }
@@ -481,7 +615,18 @@ void ChatApp::handleMenu() {
     _needRedraw = false;
 
     int batt = M5Cardputer.Power.getBatteryLevel();
-    _ui.drawMenu(_myCode, batt, _menuSel, _menuItemCount, _unreadCount);
+
+    // Build menu names based on current language
+    const char* menuNames[7];
+    menuNames[0] = Lang::menuChat();
+    menuNames[1] = Lang::menuDevices();
+    menuNames[2] = Lang::menuPair();
+    menuNames[3] = Lang::menuRange();
+    menuNames[4] = Lang::menuHistory();
+    menuNames[5] = Lang::menuHelp();
+    menuNames[6] = Lang::menuSettings();
+
+    _ui.drawMenu(_myCode, batt, _menuSel, _menuItemCount, _unreadCount, menuNames);
 }
 
 void ChatApp::handlePairing() {
@@ -548,8 +693,19 @@ void ChatApp::handleChatting() {
     }
 
     int batt = M5Cardputer.Power.getBatteryLevel();
+
+    // Get pinyin candidates if in pinyin mode
+    const char* pinyin = _pinyinMode ? _pinyinIME.getPinyin().c_str() : nullptr;
+    const std::vector<std::string>* candidates = nullptr;
+    std::vector<std::string> visibleCandidates;
+    if (_pinyinMode && !_pinyinIME.getPinyin().empty()) {
+        visibleCandidates = _pinyinIME.getVisibleCandidates();
+        candidates = &visibleCandidates;
+    }
+
     _ui.drawChatScreen(_myCode, batt, true, displayMsgs, _scrollOffset,
-                        _inputBuf.c_str(), _inputCursorPos, _cursorOn);
+                        _inputBuf.c_str(), _inputCursorPos, _cursorOn,
+                        _pinyinMode, pinyin, candidates);
 }
 
 void ChatApp::handleMsgHistory() {
@@ -587,7 +743,7 @@ void ChatApp::handleSettings() {
 
     int batt = M5Cardputer.Power.getBatteryLevel();
     _ui.drawSettings(_settingsSel, _soundEnabled, _volume,
-                     _screenTimeout, _sleepTimeout, batt);
+                     _screenTimeout, _sleepTimeout, batt, _language);
 }
 
 void ChatApp::handleHelp() {

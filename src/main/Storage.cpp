@@ -147,3 +147,11 @@ uint16_t Storage::getSleepTimeout() {
 void Storage::setSleepTimeout(uint16_t sec) {
     prefs.putUShort("slp_tout", sec);
 }
+
+uint8_t Storage::getLanguage() {
+    return prefs.getUChar("lang", 0);
+}
+
+void Storage::setLanguage(uint8_t lang) {
+    prefs.putUChar("lang", lang);
+}
