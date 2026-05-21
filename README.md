@@ -2,6 +2,8 @@
 
 A peer-to-peer encrypted chat tool built on M5Cardputer using ESP-NOW protocol. Features end-to-end AES-128-GCM encryption, ECDH key exchange, and a cyber-glow UI.
 
+![HiTerm Cover](screenshots/menu-hd.png)
+
 ## Features
 
 - **P2P Chat** — Direct device-to-device messaging via ESP-NOW
@@ -213,6 +215,28 @@ src/
 ## References
 
 - [M5Cardputer](https://github.com/m5stack/M5Cardputer) - Official M5Stack Cardputer library
+
+## Screenshots
+
+### English UI
+
+| Menu | Chat | Devices |
+|:---:|:---:|:---:|
+| ![](screenshots/menu.png) | ![](screenshots/chat.png) | ![](screenshots/devices.png) |
+
+| Pairing | Settings | History |
+|:---:|:---:|:---:|
+| ![](screenshots/pairing.png) | ![](screenshots/settings.png) | ![](screenshots/history.png) |
+
+| Help | Range Test | Recording |
+|:---:|:---:|:---:|
+| ![](screenshots/help.png) | ![](screenshots/range.png) | ![](screenshots/recording.png) |
+
+### Chinese UI
+
+| Menu | Chat |
+|:---:|:---:|
+| ![](screenshots/menu-cn.png) | ![](screenshots/chat-cn.png) |
 
 ## License
 
